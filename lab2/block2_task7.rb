@@ -12,13 +12,13 @@ maxima1 = []
 product1 = 1
 potochnyi_stovpets = 0
 
-while column < columns
-  maximum = matrix[0][column]
+while potochnyi_stovpets < columns
+  maximum = matrix[0][potochnyi_stovpets]
   row = 1
 
   while row < rows
-    if matrix[row][column] > maximum
-      maximum = matrix[row][column]
+    if matrix[row][potochnyi_stovpets] > maximum
+      maximum = matrix[row][potochnyi_stovpets]
     end
 
     row += 1
@@ -26,7 +26,7 @@ while column < columns
 
   maxima1 << maximum
   product1 *= maximum
-  column += 1
+  potochnyi_stovpets += 1
 end
 
 #2
