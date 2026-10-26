@@ -10,7 +10,7 @@ columns = matrix[0].length
 
 maxima1 = []
 product1 = 1
-column = 0
+potochnyi_stovpets = 0
 
 while column < columns
   maximum = matrix[0][column]
