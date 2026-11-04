@@ -1,0 +1,13 @@
+<h1>Hello, <%= @stud %>!</h1>
+
+<p>Це вітання прибуло з app/views/hi/index.html.erb</p>
+
+<p><%= @message %></p>
+
+
+<p>Час: <%= @current_time.strftime("%d.%m.%Y %H:%M:%S") %></p>
+
+
+<% 5.times do |i| %>
+  <p>Моє повідомлення <%= i %> прийшло з Контролера: <%= @message %></p>
+<% end %>
