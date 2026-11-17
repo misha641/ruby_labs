@@ -1,16 +1,66 @@
-<p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Medicines" %>
+<% content_for :title, "Каталог препаратів" %>
 
-<h1>Medicines</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Каталог препаратів</h1>
 
-<div id="medicines">
-  <% @medicines.each do |medicine| %>
-    <%= render medicine %>
-    <p>
-      <%= link_to "Show this medicine", medicine %>
-    </p>
+  <% if user_signed_in? %>
+    <%= link_to "Додати препарат", new_medicine_path, class: "btn btn-success" %>
   <% end %>
 </div>
 
+<div class="mb-4">
+  <%= link_to "Усі", medicines_path, class: "btn btn-outline-primary btn-sm" %>
+  <%= link_to "Безрецептурні", medicines_path(category: "Безрецептурні"), class: "btn btn-outline-primary btn-sm" %>
+  <%= link_to "Рецептурні", medicines_path(category: "Рецептурні"), class: "btn btn-outline-primary btn-sm" %>
+  <%= link_to "Вітаміни", medicines_path(category: "Вітаміни"), class: "btn btn-outline-primary btn-sm" %>
+</div>
 
+<div class="row g-4">
+  <% @medicines.each do |medicine| %>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+
+        <% if medicine.image.attached? %>
+          <%= image_tag medicine.image, class: "card-img-top",
+            style: "height: 200px; object-fit: cover;" %>
+        <% else %>
+          <div class="bg-light text-secondary d-flex align-items-center justify-content-center"
+               style="height: 200px;">
+            Фото відсутнє
+          </div>
+        <% end %>
+
+        <div class="card-body">
+          <h5 class="card-title"><%= medicine.name %></h5>
+          <p class="text-muted"><%= medicine.category %></p>
+          <p><%= truncate(medicine.description.to_s, length: 100) %></p>
+          <p><strong><%= medicine.price %> грн</strong></p>
+          <p class="small">
+            Автор: <%= medicine.user&.name || "Історичний запис" %>
+          </p>
+
+          <%= link_to "Переглянути", medicine, class: "btn btn-primary btn-sm" %>
+
+          <% if user_signed_in? && (current_user.admin? || medicine.user_id == current_user.id) %>
+            <%= link_to "Редагувати", edit_medicine_path(medicine),
+              class: "btn btn-outline-secondary btn-sm" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<% if @medicines.empty? %>
+  <p class="text-muted mt-4">Препаратів поки немає.</p>
+<% end %>
+
+<% if user_signed_in? && current_user.admin? && @medicines.any? %>
+  <div class="mt-4">
+    <%= button_to "Видалити всі препарати", delete_all_medicines_path,
+      method: :delete,
+      class: "btn btn-danger",
+      form: { data: { turbo_confirm: "Видалити абсолютно всі препарати?" } } %>
+  </div>
+<% end %>

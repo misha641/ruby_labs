@@ -1,32 +1,57 @@
-<%= form_with(model: medicine) do |form| %>
-  <% if medicine.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(medicine.errors.count, "error") %> prohibited this medicine from being saved:</h2>
 
-      <ul>
-        <% medicine.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+<%= form_with(model: medicine, class: "mb-4") do |form| %>
+  <% if medicine.errors.any? %>
+    <div class="alert alert-danger">
+      <strong>Перевірте введені дані:</strong>
+      <ul class="mb-0">
+        <% medicine.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
+  <div class="mb-3">
+    <%= form.label :name, "Назва препарату", class: "form-label" %>
+    <%= form.text_field :name, class: "form-control", required: true %>
   </div>
 
-  <div>
-    <%= form.label :category, style: "display: block" %>
-    <%= form.text_field :category %>
+  <div class="mb-3">
+    <%= form.label :category, "Категорія", class: "form-label" %>
+    <%= form.select :category,
+      ["Безрецептурні", "Рецептурні", "Вітаміни", "Інші"],
+      { include_blank: "Оберіть категорію" },
+      class: "form-select", required: true %>
   </div>
 
-  <div>
-    <%= form.label :price, style: "display: block" %>
-    <%= form.text_field :price %>
+  <div class="mb-3">
+    <%= form.label :price, "Ціна (грн)", class: "form-label" %>
+    <%= form.number_field :price, step: 0.01, min: 0.01,
+      class: "form-control", required: true %>
   </div>
 
-  <div>
-    <%= form.submit %>
+  <div class="mb-3">
+    <%= form.label :description, "Опис препарату", class: "form-label" %>
+    <%= form.text_area :description, rows: 4, maxlength: 1000,
+      class: "form-control" %>
   </div>
+
+  <div class="mb-3">
+    <%= form.label :image, "Фотографія препарату", class: "form-label" %>
+    <%= form.file_field :image, accept: "image/jpeg,image/png,image/webp",
+      class: "form-control" %>
+    <div class="form-text">JPG, PNG або WebP, максимум 5 МБ.</div>
+  </div>
+
+  <% if medicine.persisted? && medicine.image.attached? %>
+    <div class="mb-3">
+      <p>Поточне фото:</p>
+      <%= image_tag medicine.image, style: "max-width: 180px; border-radius: 8px;" %>
+    </div>
+  <% end %>
+
+  <%= form.submit medicine.new_record? ? "Додати препарат" : "Зберегти зміни",
+    class: "btn btn-primary" %>
+
+  <%= link_to "Скасувати", medicines_path, class: "btn btn-secondary ms-2" %>
 <% end %>

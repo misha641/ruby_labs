@@ -1,10 +1,34 @@
-<p style="color: green"><%= notice %></p>
 
-<%= render @medicine %>
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <h1 class="card-title"><%= @medicine.name %></h1>
 
-<div>
-  <%= link_to "Edit this medicine", edit_medicine_path(@medicine) %> |
-  <%= link_to "Back to medicines", medicines_path %>
+    <% if @medicine.image.attached? %>
+      <%= image_tag @medicine.image,
+        class: "img-fluid rounded mb-3",
+        style: "max-height: 350px;" %>
+    <% end %>
 
-  <%= button_to "Destroy this medicine", @medicine, method: :delete %>
+    <p><strong>Категорія:</strong> <%= @medicine.category %></p>
+    <p><strong>Ціна:</strong> <%= @medicine.price %> грн</p>
+    <p><strong>Опис:</strong></p>
+    <p><%= @medicine.description.presence || "Опис відсутній." %></p>
+
+    <p class="text-muted">
+      Додав: <%= @medicine.user&.name || "Історичний запис" %>
+    </p>
+
+    <%= link_to "Назад до каталогу", medicines_path,
+      class: "btn btn-secondary" %>
+
+    <% if user_signed_in? && (current_user.admin? || @medicine.user_id == current_user.id) %>
+      <%= link_to "Редагувати", edit_medicine_path(@medicine),
+        class: "btn btn-warning" %>
+
+      <%= button_to "Видалити", @medicine,
+        method: :delete,
+        class: "btn btn-danger mt-3",
+        form: { data: { turbo_confirm: "Видалити препарат?" } } %>
+    <% end %>
+  </div>
 </div>

@@ -1,0 +1,73 @@
+
+<div class="container py-4">
+  <h1>Мій профіль</h1>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h4><%= current_user.name %></h4>
+
+      <p>
+        <strong>Email:</strong>
+        <%= current_user.email %>
+      </p>
+
+      <p>
+        <strong>Роль:</strong>
+        <%= current_user.admin? ? "Адміністратор" : "Користувач" %>
+      </p>
+
+      <%= link_to "Редагувати профіль",
+          edit_user_registration_path,
+          class: "btn btn-outline-primary" %>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Мої препарати</h2>
+
+    <%= link_to "Додати препарат",
+        new_medicine_path,
+        class: "btn btn-success" %>
+  </div>
+
+  <% if @medicines.any? %>
+    <div class="row g-3">
+      <% @medicines.each do |medicine| %>
+        <div class="col-md-4">
+          <div class="card h-100">
+            <% if medicine.image.attached? %>
+              <%= image_tag medicine.image,
+                  class: "card-img-top",
+                  style: "height: 180px; object-fit: cover;" %>
+            <% end %>
+
+            <div class="card-body">
+              <h5><%= medicine.name %></h5>
+              <p><%= medicine.price %> грн</p>
+
+              <%= link_to "Переглянути", medicine,
+                  class: "btn btn-primary btn-sm" %>
+
+              <%= link_to "Редагувати",
+                  edit_medicine_path(medicine),
+                  class: "btn btn-warning btn-sm" %>
+
+              <%= button_to "Видалити", medicine,
+                  method: :delete,
+                  class: "btn btn-danger btn-sm mt-2",
+                  form: {
+                    data: {
+                      turbo_confirm: "Видалити цей препарат?"
+                    }
+                  } %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-muted">
+      Ви ще не додали жодного препарату.
+    </p>
+  <% end %>
+</div>
